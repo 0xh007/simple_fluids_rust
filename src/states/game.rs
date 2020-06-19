@@ -20,7 +20,6 @@ use crate::{
     utils::debug_util::*,
     utils::player_util::*,
     utils::sprite_util::*,
-    utils::tile_map_util::*,
 };
 
 pub struct GameState;
@@ -49,8 +48,6 @@ impl SimpleState for GameState {
 
         // Creating a test debug lines entity
         let _ = create_debug_lines(world);
-
-        let map = create_tile_map(map_sprite_sheet_handle);
 
         let _map_entity = create_map_entity(world, map);
         println!("Created map");
