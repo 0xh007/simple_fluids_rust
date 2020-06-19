@@ -48,9 +48,6 @@ impl SimpleState for GameState {
 
         // Creating a test debug lines entity
         let _ = create_debug_lines(world);
-
-        let _map_entity = create_map_entity(world, map);
-        println!("Created map");
     }
 
     fn handle_event(&mut self, data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
