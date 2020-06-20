@@ -1,4 +1,4 @@
 (
-  title: "simple_fluids_rust",
   dimensions: Some((500, 500)),
+  title: "simple_fluids_rust",
 )
