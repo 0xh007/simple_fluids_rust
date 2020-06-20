@@ -4,8 +4,8 @@ use amethyst::ecs::{
 };
 
 #[derive(Default)]
-pub struct FluidCube;
+pub struct LiquidWorld;
 
-impl Component for FluidCube {
+impl Component for LiquidWorld {
     type Storage = NullStorage<Self>;
 }

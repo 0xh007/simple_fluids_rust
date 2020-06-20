@@ -1,2 +1,2 @@
-pub mod fluid_cube;
+pub mod liquid_world;
 pub mod player;
