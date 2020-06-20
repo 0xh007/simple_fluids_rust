@@ -19,6 +19,7 @@ use crate::{
     utils::camera_util::*,
     utils::debug_util::*,
     utils::player_util::*,
+    utils::rust_sim_util::*,
     utils::sprite_util::*,
 };
 
@@ -30,13 +31,12 @@ impl SimpleState for GameState {
         world.register::<Named>();
         world.register::<Player>();
 
-        let map_sprite_sheet_handle = load_sprite_sheet(world, "assets/textures/dirt.png", "assets/textures/dirt.ron");
-
         let (width, height) = {
             let dim = world.read_resource::<ScreenDimensions>();
             (dim.width(), dim.height())
         };
 
+        let liquid_world = create_liquid_world();
         let player = init_player(world);
 
         let _camera = init_camera(
