@@ -19,7 +19,6 @@ use crate::{
     utils::camera_util::*,
     utils::debug_util::*,
     utils::player_util::*,
-    utils::rust_sim_util::*,
     utils::sprite_util::*,
 };
 
@@ -36,7 +35,6 @@ impl SimpleState for GameState {
             (dim.width(), dim.height())
         };
 
-        let liquid_world = create_liquid_world();
         let player = init_player(world);
 
         let _camera = init_camera(
