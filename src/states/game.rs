@@ -15,9 +15,11 @@ use amethyst::{
 };
 
 use crate::{
+    components::fluid_world::FluidWorld,
     components::player::Player,
     utils::camera_util::*,
     utils::debug_util::*,
+    utils::fluid_util::*,
     utils::player_util::*,
     utils::sprite_util::*,
 };
@@ -36,6 +38,10 @@ impl SimpleState for GameState {
         };
 
         let player = init_player(world);
+
+        // Create fluid world
+        world.register::<FluidWorld>();
+        let _fluid_world = init_fluid_world(world);
 
         let _camera = init_camera(
             world,

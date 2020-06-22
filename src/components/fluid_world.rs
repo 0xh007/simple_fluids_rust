@@ -236,6 +236,7 @@ pub struct FluidWorld {
 
 impl FluidWorld {
     pub fn new(dt: f32, diffusion: f32, viscosity: f32) -> FluidWorld {
+        println!("Creating fluid world");
         FluidWorld {
             dt,
             diffusion,
@@ -272,7 +273,6 @@ impl FluidWorld {
         project(self.velocity_x, self.velocity_y, self.velocity_x_prev, self.velocity_y_prev);
 
         diffuse(0, self.s, self.density, self.diffusion, self.dt);
-        advect(0, self.density, self.s, self.velocity_x, self.velocity_y, self.dt);
     }
 }
 
