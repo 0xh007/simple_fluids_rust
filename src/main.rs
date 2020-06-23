@@ -18,6 +18,7 @@ use amethyst::{
 
 mod components;
 mod states;
+mod systems;
 mod utils;
 
 fn main() -> amethyst::Result<()> {
@@ -43,7 +44,8 @@ fn main() -> amethyst::Result<()> {
             )
             .with_plugin(RenderDebugLines::default())
             .with_plugin(RenderFlat2D::default())
-        )?;
+        )?
+        .with(systems::fluid_system::FluidSystem, "fluid_system", &[]);
 
     let mut game = Application::build(assets, states::GameState)?.build(game_data)?;
     game.run();

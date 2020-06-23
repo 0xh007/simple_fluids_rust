@@ -37,16 +37,13 @@ impl SimpleState for GameState {
             (dim.width(), dim.height())
         };
 
-        let player = init_player(world);
-
         // Load water sprites
         let water_sprite_sheet = "sprites/water/water_base.png";
         let water_sprite_sheet_config = "/home/victor/Dev/repos/simple_fluids_rust/config/spritesheets/water_sritesheet.ron";
         let water_sprite_sheet_handle = load_sprite_sheet(world, water_sprite_sheet, water_sprite_sheet_config);
 
-        // Create fluid world
-        world.register::<FluidWorld>();
         let _fluid_world = init_fluid_world(world, water_sprite_sheet_handle);
+        let player = init_player(world);
 
         let _camera = init_camera(
             world,
