@@ -9,7 +9,8 @@ use amethyst::{
 use crate::components::fluid_world::FluidWorld;
 
 pub const FLUID_SIZE: usize = 256;
-pub const ITER: i32 = 10;
+pub const ITER: i32 = 16;
+pub const NEIGHBORS: f32 = 4.0;
 
 pub fn init_fluid_world(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) -> Entity {
     let mut transform = Transform::default();
@@ -40,19 +41,13 @@ fn constrain(val: i32, min: i32, max: i32) -> i32 {
 }
 
 pub fn get_index(mut x: i32, mut y: i32) -> usize {
-    println!("Getting Index");
     let size = FLUID_SIZE as i32;
+
     x = constrain(x, 0, size - 1);
     y = constrain(y, 0, size - 1);
-    let index = (x + (y * size - 1)) as usize;
-    println!("x: {} y: {} index: {} size: {}", x, y, index, size);
+    let index = constrain((x + (y * size - 1)), 0, size - 1);
     
-    if index == 0 {
-        return 0;
-    }
-    else {
-        return index - 1;
-    }
+    return index as usize;
 
     /*
     let size = FLUID_SIZE as i32;
@@ -69,12 +64,13 @@ pub fn advect(
     velocity_y: [f32; FLUID_SIZE],
     dt: f32) {
 
+    println!("Getting Index");
     let fluid_size: f32 = FLUID_SIZE as f32;
     let dtx: f32 = dt * (fluid_size - 2.0);
     let dty: f32 = dt * (fluid_size - 2.0);
 
-    for j in (0..FLUID_SIZE) {
-        for i in (0..FLUID_SIZE) {
+    for j in 0..FLUID_SIZE - 1 {
+        for i in 0..FLUID_SIZE - 1 {
             let i_idx: i32 = i as i32;
             let j_idx: i32 = j as i32;
 
@@ -137,10 +133,11 @@ pub fn advect(
 
 pub fn diffuse(b: i32, x: [f32; FLUID_SIZE], x_0: [f32; FLUID_SIZE], diff: f32, dt: f32) {
     println!("Diffusing");
+
     let size = FLUID_SIZE as f32;
     let a: f32 = dt * diff * (size - 2.0) * (size - 2.0);
 
-    linear_solve(b, x, x_0, a, 1.0 + 6.0 * a);
+    linear_solve(b, x, x_0, a, 1.0 + NEIGHBORS * a);
 }
 
 pub fn linear_solve(b: i32, mut x: [f32; FLUID_SIZE], x_0: [f32; FLUID_SIZE], a: f32, c: f32) {
@@ -148,8 +145,8 @@ pub fn linear_solve(b: i32, mut x: [f32; FLUID_SIZE], x_0: [f32; FLUID_SIZE], a:
     let c_recip: f32 = 1.0 / c;
 
     for k in 0..ITER {
-        for j in 0..FLUID_SIZE {
-            for i in 0..FLUID_SIZE {
+        for j in 0..FLUID_SIZE - 1 {
+            for i in 0..FLUID_SIZE - 1 {
                 let i_idx: i32 = i as i32;
                 let j_idx: i32 = j as i32;
 
@@ -171,9 +168,10 @@ pub fn linear_solve(b: i32, mut x: [f32; FLUID_SIZE], x_0: [f32; FLUID_SIZE], a:
 }
 
 pub fn project(mut velocity_x: [f32; FLUID_SIZE], mut velocity_y: [f32; FLUID_SIZE], mut p: [f32; FLUID_SIZE], mut div: [f32; FLUID_SIZE]) {
+    println!("Projecting");
     let fluid_size_flt: f32 = FLUID_SIZE as f32;
-    for j in 0..FLUID_SIZE {
-        for i in 0..FLUID_SIZE {
+    for j in 0..FLUID_SIZE - 1 {
+        for i in 0..FLUID_SIZE - 1 {
             let i_idx: i32 = i as i32;
             let j_idx: i32 = j as i32;
 
@@ -196,10 +194,11 @@ pub fn project(mut velocity_x: [f32; FLUID_SIZE], mut velocity_y: [f32; FLUID_SI
 
     set_boundary(0, div);
     set_boundary(0, p);
-    linear_solve(0, p, div, 1.0, 6.0);
 
-    for j in 0..FLUID_SIZE {
-        for i in 0..FLUID_SIZE {
+    linear_solve(0, p, div, 1.0, NEIGHBORS);
+
+    for j in 0..FLUID_SIZE - 1 {
+        for i in 0..FLUID_SIZE - 1 {
             let i_idx: i32 = i as i32;
             let j_idx: i32 = j as i32;
 
@@ -218,7 +217,7 @@ pub fn project(mut velocity_x: [f32; FLUID_SIZE], mut velocity_y: [f32; FLUID_SI
 fn set_boundary(b: i32, mut x: [f32; FLUID_SIZE]) {
     let fluid_size_int: i32 = FLUID_SIZE as i32;
 
-    for i in 0..FLUID_SIZE {
+    for i in 0..FLUID_SIZE - 1 {
         let i_idx: i32 = i as i32;
 
         let new_next_x: f32;
