@@ -15,8 +15,11 @@ use amethyst::{
 };
 
 use crate::{
-    components::fluid_world::FluidWorld,
-    components::player::Player,
+    components::{
+        fluid_world::FluidWorld,
+        particle::Particle,
+        player::Player,
+    },
     utils::camera_util::*,
     utils::debug_util::*,
     utils::fluid_util::*,
@@ -42,7 +45,9 @@ impl SimpleState for GameState {
         let water_sprite_sheet_config = "/home/victor/Dev/repos/simple_fluids_rust/config/spritesheets/water_sritesheet.ron";
         let water_sprite_sheet_handle = load_sprite_sheet(world, water_sprite_sheet, water_sprite_sheet_config);
 
-        let _fluid_world = init_fluid_world(world, water_sprite_sheet_handle);
+        let _fluid_world = init_fluid_world(world);
+        world.register::<Particle>();
+        init_particles(world, water_sprite_sheet_handle);
         let player = init_player(world);
 
         let _camera = init_camera(

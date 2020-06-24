@@ -6,28 +6,47 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::components::fluid_world::FluidWorld;
+use crate::components::{
+    fluid_world::FluidWorld,
+    particle::Particle,
+};
 
 pub const FLUID_SIZE: usize = 256;
-pub const ITER: i32 = 16;
+pub const ITER: i32 = 10;
 pub const NEIGHBORS: f32 = 4.0;
 
-pub fn init_fluid_world(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) -> Entity {
+pub fn init_fluid_world(world: &mut World) -> Entity {
     let mut transform = Transform::default();
     transform.set_translation_xyz(0.0, 0.0, 0.1);
 
+    world
+        .create_entity()
+        .with(FluidWorld::new(0.2, 0.0, 0.000001))
+        .with(transform)
+        .named("fluid world")
+        .build()
+}
+
+pub fn init_particles(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
         sprite_number: 0,
     };
 
-    world
-        .create_entity()
-        .with(sprite_render)
-        .with(FluidWorld::new(0.2, 0.0, 0.000001))
-        .with(transform)
-        .named("fluid world")
-        .build()
+    for j_idx in 0..FLUID_SIZE as i32 - 1 {
+        for i_idx in 0..FLUID_SIZE as i32 - 1 {
+            let mut transform = Transform::default();
+            transform.set_translation_xyz(j_idx as f32, i_idx as f32, 1.0);
+
+            world
+                .create_entity()
+                .with(sprite_render.clone())
+                .with(Particle::new())
+                .with(transform)
+                .named("particle")
+                .build();
+        }
+    }
 }
 
 fn constrain(val: i32, min: i32, max: i32) -> i32 {
@@ -42,18 +61,11 @@ fn constrain(val: i32, min: i32, max: i32) -> i32 {
 
 pub fn get_index(mut x: i32, mut y: i32) -> usize {
     let size = FLUID_SIZE as i32;
-
     x = constrain(x, 0, size - 1);
     y = constrain(y, 0, size - 1);
-    let index = constrain((x + (y * size - 1)), 0, size - 1);
+    let index = (x + (y * size - 1)) as usize;
     
-    return index as usize;
-
-    /*
-    let size = FLUID_SIZE as i32;
-    let index = (x * y * size) as usize;
-    return index;
-    */
+    return constrain(index as i32, 0, size - 1) as usize;
 }
 
 pub fn advect(
@@ -62,9 +74,10 @@ pub fn advect(
     density_prev: [f32; FLUID_SIZE],
     velocity_x: [f32; FLUID_SIZE],
     velocity_y: [f32; FLUID_SIZE],
-    dt: f32) {
+    dt: f32)
+    {
+    println!("Advecting");
 
-    println!("Getting Index");
     let fluid_size: f32 = FLUID_SIZE as f32;
     let dtx: f32 = dt * (fluid_size - 2.0);
     let dty: f32 = dt * (fluid_size - 2.0);

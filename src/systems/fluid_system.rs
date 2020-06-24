@@ -47,6 +47,9 @@ impl<'s> System<'s> for FluidSystem {
 
                 fluid_world.started = true;
             }
+            else {
+                println!("Fluid sim ready");
+            }
         }
     }
 }
