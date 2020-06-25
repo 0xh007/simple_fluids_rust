@@ -1,9 +1,10 @@
 use amethyst::ecs::{
     Component,
     DenseVecStorage,
+    Entity,
 };
 
-pub struct Particle;
+pub struct Particle {}
 
 impl Particle {
     pub fn new() -> Particle {

@@ -3,7 +3,14 @@ use amethyst::{
     core::Transform,
     ecs::Entity,
     prelude::*,
-    renderer::{SpriteRender, SpriteSheet},
+    renderer::{
+        palette::Srgba,
+        resources::Tint,
+        SpriteRender,
+        SpriteSheet,
+        Texture,
+        Transparent,
+    },
 };
 
 use crate::components::{
@@ -15,19 +22,22 @@ pub const FLUID_SIZE: usize = 256;
 pub const ITER: i32 = 10;
 pub const NEIGHBORS: f32 = 4.0;
 
-pub fn init_fluid_world(world: &mut World) -> Entity {
+pub fn init_fluid_world(world: &mut World) -> &FluidWorld {
     let mut transform = Transform::default();
     transform.set_translation_xyz(0.0, 0.0, 0.1);
+    let fluid_world_component = FluidWorld::new(0.2, 0.0, 0.00001);
 
     world
         .create_entity()
-        .with(FluidWorld::new(0.2, 0.0, 0.000001))
+        .with(fluid_world_component)
         .with(transform)
         .named("fluid world")
-        .build()
+        .build();
+
+    return &fluid_world_component;
 }
 
-pub fn init_particles(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+pub fn init_particles(world: &mut World, fluid_world: FluidWorld, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
         sprite_number: 0,
@@ -37,12 +47,15 @@ pub fn init_particles(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet
         for i_idx in 0..FLUID_SIZE as i32 - 1 {
             let mut transform = Transform::default();
             transform.set_translation_xyz(j_idx as f32, i_idx as f32, 1.0);
+            let tint = Tint(Srgba::new(1.0, 1.0, 1.0, 1.0));
 
             world
                 .create_entity()
                 .with(sprite_render.clone())
                 .with(Particle::new())
+                .with(fluid_world)
                 .with(transform)
+                .with(tint)
                 .named("particle")
                 .build();
         }
@@ -281,21 +294,3 @@ fn set_boundary(b: i32, mut x: [f32; FLUID_SIZE]) {
         * (x[get_index(fluid_size_int - 2, fluid_size_int - 1)]
         + x[get_index(fluid_size_int - 1, fluid_size_int - 2)]);
 }
-
-
-/*
-pub fn step() {
-    diffuse(1, self.velocity_x_prev, self.velocity_x, self.viscosity, self.dt);
-    diffuse(2, self.velocity_y_prev, self.velocity_y, self.viscosity, self.dt);
-
-    project(self.velocity_x_prev, self.velocity_y_prev, self.velocity_x, self.velocity_y);
-
-    advect(1, self.velocity_x, self.velocity_x_prev, self.velocity_x_prev, self.velocity_y_prev, self.dt);
-    advect(2, self.velocity_y, self.velocity_y_prev, self.velocity_x_prev, self.velocity_y_prev, self.dt);
-
-    project(self.velocity_x, self.velocity_y, self.velocity_x_prev, self.velocity_y_prev);
-
-    diffuse(0, self.s, self.density, self.diffusion, self.dt);
-}
-*/
-

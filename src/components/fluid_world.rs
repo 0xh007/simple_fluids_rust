@@ -48,7 +48,6 @@ impl FluidWorld {
         self.velocity_x[index] += amount_x;
         self.velocity_y[index] += amount_y;
     }
-
 }
 
 impl Component for FluidWorld {
