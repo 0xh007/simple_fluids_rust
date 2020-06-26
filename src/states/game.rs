@@ -45,10 +45,9 @@ impl SimpleState for GameState {
         let water_sprite_sheet_config = "/home/victor/Dev/repos/simple_fluids_rust/config/spritesheets/water_sritesheet.ron";
         let water_sprite_sheet_handle = load_sprite_sheet(world, water_sprite_sheet, water_sprite_sheet_config);
 
-        world.register::<FluidWorld>();
         let fluid_world = init_fluid_world(world);
         world.register::<Particle>();
-        init_particles(world, fluid_world, water_sprite_sheet_handle);
+        init_particles(world, water_sprite_sheet_handle);
         let player = init_player(world);
 
         let _camera = init_camera(
@@ -60,6 +59,9 @@ impl SimpleState for GameState {
 
         // Creating a test debug lines entity
         let _ = create_debug_lines(world);
+
+        let entities = world.entities();
+        println!("{}", type entities);
     }
 
     fn handle_event(&mut self, data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {

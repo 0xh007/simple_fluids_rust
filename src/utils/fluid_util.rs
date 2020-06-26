@@ -22,7 +22,7 @@ pub const FLUID_SIZE: usize = 256;
 pub const ITER: i32 = 10;
 pub const NEIGHBORS: f32 = 4.0;
 
-pub fn init_fluid_world(world: &mut World) -> &FluidWorld {
+pub fn init_fluid_world(world: &mut World) -> Entity {
     let mut transform = Transform::default();
     transform.set_translation_xyz(0.0, 0.0, 0.1);
     let fluid_world_component = FluidWorld::new(0.2, 0.0, 0.00001);
@@ -32,12 +32,10 @@ pub fn init_fluid_world(world: &mut World) -> &FluidWorld {
         .with(fluid_world_component)
         .with(transform)
         .named("fluid world")
-        .build();
-
-    return &fluid_world_component;
+        .build()
 }
 
-pub fn init_particles(world: &mut World, fluid_world: FluidWorld, sprite_sheet_handle: Handle<SpriteSheet>) {
+pub fn init_particles(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let sprite_render = SpriteRender {
         sprite_sheet: sprite_sheet_handle,
         sprite_number: 0,
@@ -53,7 +51,6 @@ pub fn init_particles(world: &mut World, fluid_world: FluidWorld, sprite_sheet_h
                 .create_entity()
                 .with(sprite_render.clone())
                 .with(Particle::new())
-                .with(fluid_world)
                 .with(transform)
                 .with(tint)
                 .named("particle")
