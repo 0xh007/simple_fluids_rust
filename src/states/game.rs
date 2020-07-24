@@ -61,7 +61,6 @@ impl SimpleState for GameState {
         let _ = create_debug_lines(world);
 
         let entities = world.entities();
-        println!("{}", type entities);
     }
 
     fn handle_event(&mut self, data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
