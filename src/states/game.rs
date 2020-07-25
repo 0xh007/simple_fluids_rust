@@ -53,7 +53,7 @@ impl SimpleState for GameState {
         let _camera = init_camera(
             world,
             player,
-            Transform::from(Vector3::new(0.0, 0.0, 1.1)),
+            Transform::from(Vector3::new(128.0, 128.0, 2.F0)),
             Camera::standard_2d(width, height),
         );
 

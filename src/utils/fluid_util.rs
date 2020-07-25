@@ -123,7 +123,7 @@ pub fn advect(
             let i_next: f32 = i_prev + 1.0;
             let i_next_int: i32 = i_next as i32;
 
-            if (y < 0.5) {
+            if y < 0.5 {
                 y = 0.5;
             }
 
