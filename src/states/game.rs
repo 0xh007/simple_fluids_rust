@@ -53,8 +53,8 @@ impl SimpleState for GameState {
         let _camera = init_camera(
             world,
             player,
-            Transform::from(Vector3::new(128.0, 128.0, 2.F0)),
-            Camera::standard_2d(width, height),
+            Transform::from(Vector3::new(128.0, 128.0, 2.0)),
+            Camera::standard_2d(256.0, 256.0),
         );
 
         // Creating a test debug lines entity
